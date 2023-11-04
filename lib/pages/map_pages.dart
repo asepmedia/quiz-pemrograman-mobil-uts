@@ -23,9 +23,16 @@ class ServiceWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.blueGrey.shade50,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          )
+        ],
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Center(
         child: Text(
