@@ -27,12 +27,13 @@ class _MapPagesState extends State<MapPages> {
         lat: -6.1845396886288855,
         lng: 106.7989743276285),
     LocationModel(
-        name: "RSUD Bogor",
-        address: "Jl. Suka Maju No. 1",
-        image:
-            "https://lh5.googleusercontent.com/p/AF1QipMf6XBkRSiW8cIA7cWvBBrrxclLixjk_gr_6uda=w408-h254-k-no",
-        lat: -6.2428189655075546,
-        lng: 106.83413551564657),
+      name: "RSUD Bogor",
+      address: "Jl. Suka Maju No. 1",
+      image:
+          "https://lh5.googleusercontent.com/p/AF1QipMf6XBkRSiW8cIA7cWvBBrrxclLixjk_gr_6uda=w408-h254-k-no",
+      lat: -6.556775559614826,
+      lng: 106.77233506290314,
+    ),
   ];
 
   final Completer<GoogleMapController> _controller =
@@ -45,7 +46,7 @@ class _MapPagesState extends State<MapPages> {
 
   static const CameraPosition _kLake = CameraPosition(
       target: LatLng(-6.24167456424069, 106.83614573480172),
-      zoom: 90.151926040649414);
+      zoom: 14.151926040649414);
 
   @override
   void initState() {
@@ -86,6 +87,15 @@ class _MapPagesState extends State<MapPages> {
                   position: _currentPosition,
                   draggable: true,
                   onTap: _showDetailSelectedLocation),
+              for (var item in _locations)
+                Marker(
+                  markerId: MarkerId(item.name),
+                  position: LatLng(item.lat, item.lng),
+                  draggable: true,
+                  onTap: () {
+                    _goToThePosition(location: item);
+                  },
+                ),
             },
             initialCameraPosition: _kGooglePlex,
             onMapCreated: (GoogleMapController controller) {
@@ -179,13 +189,14 @@ class _MapPagesState extends State<MapPages> {
 
   Future<void> _goToThePosition({required LocationModel location}) async {
     CameraPosition pos = CameraPosition(
-        target: LatLng(location.lat, location.lng), zoom: 90.151926040649414);
+        target: LatLng(location.lat, location.lng), zoom: 14.151926040649414);
     setState(() {
       _currentPosition = LatLng(location.lat, location.lng);
       _selectedLocation = location;
     });
     final GoogleMapController controller = await _controller.future;
     await controller.animateCamera(CameraUpdate.newCameraPosition(pos));
+    _showDetailSelectedLocation();
   }
 
   Future<void> _searchLocation() async {
