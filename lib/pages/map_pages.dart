@@ -79,6 +79,42 @@ class _MapPagesState extends State<MapPages> {
       lat: -6.556775559614826,
       lng: 106.77233506290314,
     ),
+    LocationModel(
+      name: "RS Muhammadiyah Taman Puring",
+      address:
+          "Jl. Gandaria 1 No.20, RT.1/RW.2, Kramat Pela, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12130",
+      image:
+          "https://lh5.googleusercontent.com/p/AF1QipMHuFqfLr6ujpGuhoeTtE0CoCNB-jnWm7kRsgdt=w426-h240-k-no",
+      lat: -6.240132942581877,
+      lng: 106.78809889929619,
+    ),
+    LocationModel(
+      name: "Rumah Sakit Pusat Pertamina",
+      address:
+          "Jl. Kyai Maja No.43, Gunung, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12120",
+      image:
+          "https://lh5.googleusercontent.com/p/AF1QipM61NkmVPFG6RvbyXqkdUFEQlAb2l6cKu3fDv0a=w408-h291-k-no",
+      lat: -6.2392797204258175,
+      lng: 106.79281958692704,
+    ),
+    LocationModel(
+      name: "Rumah Sakit Medistra",
+      address:
+          "Jl. Gatot Subroto No.59, RT.1/RW.4, Kuningan Tim., Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950",
+      image:
+          "https://lh5.googleusercontent.com/p/AF1QipOa6_hz25Ov8v7Cbd29rgfwp-MwM-OWeJ0UKn8j=w408-h544-k-no",
+      lat: -6.23791456197067,
+      lng: 106.83341750311567,
+    ),
+    LocationModel(
+      name: "RS Pondok Indah - Pondok Indah",
+      address:
+          "Jalan Metro Duta Kav. UE, Pd. Pinang, Kec. Kby. Lama, Daerah Khusus Ibukota Jakarta 12310",
+      image:
+          "https://lh5.googleusercontent.com/p/AF1QipOQXe42NgEJK7HgFvWUTZyniKEhlH0swhQmbdoG=w408-h249-k-no",
+      lat: -6.282516460816882,
+      lng: 106.78196432201791,
+    ),
   ];
 
   final Completer<GoogleMapController> _controller =
@@ -92,7 +128,7 @@ class _MapPagesState extends State<MapPages> {
           GoogleMap(
             myLocationButtonEnabled: false,
             myLocationEnabled: true,
-            onTap: (LatLng) {
+            onTap: (latLng) {
               myFocusNode.unfocus();
               _hideDetail();
             },
@@ -260,27 +296,12 @@ class _MapPagesState extends State<MapPages> {
     //   isDetail = true;
     // });
     showModalBottomSheet(
+        showDragHandle: true,
         useSafeArea: true,
         context: context,
         barrierColor: Colors.black.withOpacity(0.6),
         builder: (context) {
           return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            const SizedBox(
-              height: 18,
-            ),
-            Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade400,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                width: 50,
-                height: 5,
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
             const Text(
               "Hasil pencarian",
               style: TextStyle(
@@ -291,29 +312,36 @@ class _MapPagesState extends State<MapPages> {
             const SizedBox(
               height: 10,
             ),
-            Column(
-              children: List.generate(
-                _locations.length,
-                (index) => ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      _locations[index].image,
-                      height: 100.0,
-                      width: 100.0,
-                      fit: BoxFit.cover,
+            Flexible(
+              child: GridView.count(
+                crossAxisCount: 1,
+                childAspectRatio: 4.5,
+                children: List.generate(
+                  _locations.length,
+                  (index) => ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        _locations[index].image,
+                        height: 100.0,
+                        width: 100.0,
+                        fit: BoxFit.cover,
+                      ),
                     ),
+                    title: Text(
+                      _locations[index].name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500, color: Colors.black87),
+                    ),
+                    subtitle: Text(
+                      _locations[index].address,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onTap: () {
+                      _goToThePosition(location: _locations[index]);
+                      Navigator.pop(context);
+                    },
                   ),
-                  title: Text(
-                    _locations[index].name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500, color: Colors.black87),
-                  ),
-                  subtitle: Text(_locations[index].address),
-                  onTap: () {
-                    _goToThePosition(location: _locations[index]);
-                    Navigator.pop(context);
-                  },
                 ),
               ),
             ),
@@ -328,34 +356,30 @@ class _MapPagesState extends State<MapPages> {
     myFocusNode.unfocus();
     showModalBottomSheet(
         useSafeArea: true,
+        showDragHandle: true,
         context: context,
         barrierColor: Colors.black.withOpacity(0.6),
         builder: (context) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              const SizedBox(
-                height: 18,
-              ),
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade400,
-                    borderRadius: BorderRadius.circular(20),
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _showDetail();
+                      },
+                      icon: const Icon(Icons.arrow_back)),
+                  const Text(
+                    "Detail Lokasi",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.black87),
                   ),
-                  width: 50,
-                  height: 5,
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              const Text(
-                "Detail Lokasi",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: Colors.black87),
+                  const Text("")
+                ],
               ),
               const SizedBox(
                 height: 10,
@@ -444,6 +468,24 @@ class _MapPagesState extends State<MapPages> {
                   )
                 ],
               ),
+              const SizedBox(
+                height: 5,
+              ),
+              Flexible(
+                  child: SizedBox(
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    ServiceWidget(
+                      text: "7 x 24 Jam",
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+              )),
               const SizedBox(
                 height: 5,
               ),
