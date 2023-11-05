@@ -149,6 +149,12 @@ class _MapPagesState extends State<MapPages> {
                   markerId: MarkerId(item.name),
                   position: LatLng(item.lat, item.lng),
                   draggable: true,
+                  infoWindow: InfoWindow(
+                      title: item.name,
+                      snippet: item.address,
+                      onTap: () {
+                        _goToThePosition(location: item);
+                      }),
                   onTap: () {
                     _goToThePosition(location: item);
                   },
